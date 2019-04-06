@@ -1,7 +1,8 @@
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for,
+    jsonify
 )
 # from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -14,7 +15,11 @@ def test_func():
     if request.method == 'POST':
         return 'Post hello'
     elif request.method == 'GET':
-        return 'Get'
+        k = {
+            'a': 'kanapeczki',
+            'b': [1, 2, 3],
+        }
+        return jsonify(k)
 
 #    if request.method == 'POST':
 #        username = request.form['username']
