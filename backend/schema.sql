@@ -6,7 +6,7 @@ CREATE TABLE clans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(30) NOT NULL,
     logo VARCHAR(30),
-    color VARCHAR(6)
+    color VARCHAR(6),
     avatar BLOB
 );
 

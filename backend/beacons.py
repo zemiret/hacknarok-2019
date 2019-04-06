@@ -18,8 +18,6 @@ def test_func():
         LEFT JOIN clan as c on c.id = b.id'
     ).fetchall()
 
-    print(beacons)
-
     res = {}
     for row in beacons:
         res[str(row[0])] = {
