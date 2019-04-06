@@ -25,16 +25,18 @@ def create_app(test_config=None):
         pass
 
     # a simple page that says hello
-    @app.route('/hello')
+    @app.route('/')
     def hello():
-        return 'Hello, World!'
+        return 'Shoot it man!'
 
     from . import db
     db.init_app(app)
 
 
     from . import views_test 
+    from . import beacons
     app.register_blueprint(views_test.bp)
+    app.register_blueprint(beacons.bp)
 
     return app
 
