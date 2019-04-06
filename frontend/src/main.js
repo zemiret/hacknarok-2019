@@ -5,10 +5,22 @@ import VueResource from 'vue-resource'
 // import middleware from '@/middleware/middleware'
 import store from '@/store/store.js'
 // import {API_URL} from '@/constants.js'
+import { Icon }  from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 
 Vue.config.productionTip = false
 Vue.use(VueResource)
 Vue.use(store)
+
+
+// this part resolve an issue where the markers would not appear
+delete Icon.Default.prototype._getIconUrl;
+
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
 
 // middleware(router)
 //

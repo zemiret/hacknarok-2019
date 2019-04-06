@@ -48,7 +48,7 @@ export default {
 
   methods: {
     hideDialog() {
-      this.$store.bus.$emit("hide-dialog");
+      this.$store.bus.$emit("hide-is_dialog_open");
     },
     submit() {
       if (!this.$refs.form.validate()) return;

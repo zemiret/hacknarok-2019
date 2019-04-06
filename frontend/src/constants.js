@@ -1,1 +1,1 @@
-export const API_URL = "https://welearn.math.party/"
+export const API_URL = "localhost:5000/"

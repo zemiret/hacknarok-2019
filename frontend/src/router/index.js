@@ -7,6 +7,7 @@ import 'vuetify/dist/vuetify.min.css'
 import Vuetify from 'vuetify'
 import Login from '@/components/user/Login'
 import Register from '@/components/user/Register'
+import ProfileView from '@/components/user/Profile'
 import VueTouch from 'vue-touch'
 import Room from '@/components/room/Room'
 
@@ -30,15 +31,20 @@ export default new Router({
       component: MapView
     },
     {
-      path: '/event',
-      name: 'EventListItem',
-      component: EventListItem
+      path: '/profile/:userId',
+      name: 'Profile',
+      component: ProfileView
     },
-    {
-      path: '/room/:roomId',
-      name: 'Room',
-      component: Room
-    },
+    // {
+    //   path: '/event',
+    //   name: 'EventListItem',
+    //   component: EventListItem
+    // },
+    // {
+    //   path: '/room/:roomId',
+    //   name: 'Room',
+    //   component: Room
+    // },
     {
       path: '/login',
       name: 'Login',
