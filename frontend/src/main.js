@@ -3,14 +3,16 @@ import App from './App'
 import router from './router'
 import VueResource from 'vue-resource'
 // import middleware from '@/middleware/middleware'
-import store from '@/store/store.js'
+import store from '@/store/store.js';
 // import {API_URL} from '@/constants.js'
 import { Icon }  from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import VueGeolocation from 'vue-browser-geolocation';
 
-Vue.config.productionTip = false
-Vue.use(VueResource)
-Vue.use(store)
+Vue.config.productionTip = false;
+Vue.use(VueResource);
+Vue.use(store);
+Vue.use(VueGeolocation);
 
 
 // this part resolve an issue where the markers would not appear
