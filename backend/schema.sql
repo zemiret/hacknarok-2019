@@ -47,8 +47,8 @@ CREATE TABLE users (
 INSERT INTO beacons(lat, lon, range, capture_time)
 VALUES 
 (1, 2, 5, 60),
-(50.028108999999995, 19.8919536, 10, 70),
-(50.0210837, 19.8859565, 50, 70);
+(50.028108999999995, 19.8919536, 10, 5),
+(50.0210837, 19.8859565, 50, 5);
 
 INSERT INTO beacons(lat, lon, range, capture_time, clan_id)
 VALUES 

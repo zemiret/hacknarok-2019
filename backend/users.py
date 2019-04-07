@@ -21,8 +21,7 @@ def test_func():
 
     res = {}
     for row in users:
-        res[str(row[0])] = {
-            'username': row[1],
+        res[str(row[0])] = { 'username': row[1],
             'email': row[2],
             'clan_id': row[4],
             'avatar': row[5] or -1,
@@ -53,25 +52,36 @@ def get_user(user_id):
     return jsonify(res)
 
 
-def get_user_by_id(id):
+def get_user_by_id(user_id):
     db = get_db()
 
     user = db.execute(
         'SELECT * FROM users WHERE id=?',
-        (id,)
+        (user_id,)
     ).fetchone()
 
     return user
 
+def get_uset_dict(user_id):
+    user = get_user_by_id(user_id)
 
-@bp.route('/start_capture/<int:user_id>', methods=(['GET']))
+    return {
+        'id': user[0],
+        'username': user[1],
+        'email': user[2],
+        'clan_id': user[4],
+        'avatar': user[5] or '',
+        'lat': user[6] or 0,
+        'lon': user[7] or 0,
+        'beacon_id': user[8] or -1
+    }
+
+
+@bp.route('/start_capture/<int:user_id>', methods=(['POST']))
 def start_capture(user_id):
     db = get_db()
     msg = None
     user = get_user_by_id(user_id)
-
-    print(user[6])
-    print(user[7])
 
     beacon = db.execute(
         'SELECT * FROM beacons b WHERE POWER(b.range,2) >= (POWER((b.lat - ?),2)+POWER((b.lon - ?),2))',
@@ -79,20 +89,49 @@ def start_capture(user_id):
     ).fetchone()
 
     if beacon is None:
-        msg = 'Beacon no exists'
+        return jsonify(None)
     elif beacon[6] != 0:
-        msg = 'Beacon is captured now!'
+        return jsonify(None)
     else:
         db.execute(
             'UPDATE beacons SET is_being_captured =1'
         )
-
-        db.commit()
         db.execute(
             'UPDATE users SET beacon_id = ? WHERE id = ?', (beacon[0], user_id)
         )
         db.commit()
-        msg = 'Start capturing the beacon !'
+        return jsonify(beacon) 
+
+@bp.route('/end_capture/<int:beacon_id>', methods=(['POST']))
+def end_capture(user_id):
+    db = get_db()
+    msg = None
+
+    user = get_user_dict(user_id)
+    captured_beacon_id = user['beacon_id']
+
+    if captured_beacon_id is None or captured_beacon_id == -1:
+        return "The beacon does not exist"
+
+    beacon = db.execute(
+        'SELECT * FROM beacons b \
+         WHERE b.id = ?',
+        (user['beacon_id'])
+    ).fetchone()
+
+    if beacon is None:
+        msg = 'Beacon no exists'
+    else:
+        db.execute(
+            'UPDATE beacons SET is_being_captured = 0, clan_id = ?',
+            (user['clan_id'],)
+        )
+
+        db.execute(
+            'UPDATE users SET beacon_id = -1 WHERE id = ?', (user_id, )
+        )
+        db.commit()
+        msg = 'Beacon is yours' 
 
     return msg
 
@@ -147,7 +186,7 @@ def move(user_id, lat, lon):
     return 'move'
 
 
-@bp.route('set_position/<int:user_id>/<int:lat>/<int:lon>', methods=(['GET']))
+#@bp.route('set_position/<int:user_id>/<int:lat>/<int:lon>', methods=(['GET']))
 def set_position(user_id, lat, lon):
     db = get_db()
 
@@ -157,3 +196,14 @@ def set_position(user_id, lat, lon):
     db.commit()
 
     return "update"
+
+def get_beacon_dict(beacon_row):
+    return {
+        'id': beacon_row[0],
+        'lat': beacon_row[1],
+        'lon': beacon_row[2],
+        'range': beacon_row[3],
+        'capture_time': beacon_row[4],
+        'clan_id': beacon_row[5],
+        'is_being_captured': beacon_row[6],
+    }

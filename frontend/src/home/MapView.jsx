@@ -30,15 +30,11 @@ class MapView extends Component {
       timeout: 1000
     });
 
-    axios
-      .get(Config.BASE_URL + 'beacons')
-      .then((res) => {
-        const data = res.data;
+    this.getBeacons();
 
-        this.setState({
-          beacons: data.map(beacon => this.createPolygon(beacon.lat, beacon.lon, beacon.range, beacon.color || '#000000')),
-        }, () => console.log('State', this.state));
-      });
+    setInterval(() => {
+      this.getBeacons();
+    }, 3000);
 
     axios
       .get(Config.BASE_URL + 'users/user/1')
@@ -50,11 +46,11 @@ class MapView extends Component {
   }
 
   componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.locationWatch)
+    navigator.geolocation.clearWatch(this.locationWatch);
   }
 
   render() {
-    const {user, other_positions, beacons} = this.state;
+    const { user, other_positions, beacons } = this.state;
     const pos = user == null ? [0, 0] : [this.state.user.lat, this.state.user.lon];
 
 
@@ -121,8 +117,28 @@ class MapView extends Component {
   };
 
   startCapture = () => {
-    console.log('Capturing');
-  }
+    if (this.user != null) {
+      axios
+        .post(Config.BASE_URL + 'users/start_capture/' + this.user.id)
+        .then((res) => res.data)
+        .then((beacon) => {
+
+        })
+        .catch(console.log);
+    }
+  };
+
+  getBeacons = () => {
+    axios
+      .get(Config.BASE_URL + 'beacons')
+      .then((res) => {
+        const data = res.data;
+
+        this.setState({
+          beacons: data.map(beacon => this.createPolygon(beacon.lat, beacon.lon, beacon.range, beacon.color || '#000000'))
+        }, () => console.log('State', this.state));
+      });
+  };
 }
 
 export default MapView;
