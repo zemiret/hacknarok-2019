@@ -5,11 +5,24 @@ DROP TABLE IF EXISTS beacons;
 CREATE TABLE clans (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(30) NOT NULL,
-    logo VARCHAR(30),
     color VARCHAR(6),
     avatar BLOB
 );
 
+CREATE TABLE beacons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lat REAL NOT NULL,
+    lon REAL NOT NULL,
+    range REAL NOT NULL,
+
+	capture_time INTEGER, --seconds to capture the beacon
+
+    clan_id INTEGER,
+	is_being_captured INTEGER default 0,
+	is_captured INTEGER default 0,
+
+	FOREIGN KEY (clan_id) REFERENCES clans(id)
+);
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
@@ -23,26 +36,17 @@ CREATE TABLE users (
 	lat REAL,
 	lon REAL,
 
-	FOREIGN KEY (clan_id) REFERENCES clan(id)
+	beacon_id INTEGER,
+
+	FOREIGN KEY (clan_id) REFERENCES clans(id)
+	FOREIGN KEY (beacon_id) REFERENCES beacons(id)
 );
 
-CREATE TABLE beacons (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lat REAL NOT NULL,
-    lon REAL NOT NULL,
-    range REAL NOT NULL,
 
-	capture_time INTEGER, --seconds to capture the beacon
-
-    clan_id INTEGER,
-	is_being_captured INTEGER default 0,
-
-	FOREIGN KEY (clan_id) REFERENCES clan(id)
-);
 
 INSERT INTO beacons(lat, lon, range, capture_time)
 VALUES 
-(56.2221, 57.3211, 5, 60),
+(1, 2, 5, 60),
 (56.2221, 57.3221, 10, 70);
 
 INSERT INTO beacons(lat, lon, range, capture_time, clan_id)
@@ -63,3 +67,4 @@ INSERT INTO users (username,email,password,clan_id) VALUES('Jednorożec2','j2@gm
 INSERT INTO users (username,email,password,clan_id) VALUES('Jednorożec3','j3@gmail.com','j31234',2);
 
 INSERT INTO users (username,email,password) VALUES('Jednorożec4','j4@gmail.com','j31234');
+
