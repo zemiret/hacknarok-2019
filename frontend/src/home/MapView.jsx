@@ -13,7 +13,7 @@ class MapView extends Component {
       other_positions: [
         [50.028108999999995, 19.8919536],
         [50.008108999999995, 19.9119536],
-        [50.015108999999995, 19.9019536],
+        [50.015108999999995, 19.9019536]
       ],
       polygons: []
     };
@@ -22,13 +22,13 @@ class MapView extends Component {
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(this.onPosition, null, {
       enableHighAccuracy: true,
-      timeout: 1000,
+      timeout: 1000
     });
 
     this.setState({
       polygons: [
-        this.createPolygon(50.028108999999995, 19.8919536, 0.001, 'red'),
-        this.createPolygon(50.028108999999995, 19.7919536, 0.001, 'blue')
+        this.createPolygon(50.028108999999995, 19.8919536, 50, 'red'),
+        this.createPolygon(50.028108999999995, 19.7919536, 50, 'blue')
       ]
     });
   }
@@ -53,7 +53,7 @@ class MapView extends Component {
 
           {polygons.map((polygon, i) => {
             console.log(polygon);
-            return <Polygon positions={polygon.positions} key={i} color={polygon.color}/>
+            return <Polygon positions={polygon.positions} key={i} color={polygon.color}/>;
           })}
         </Map>
 
@@ -69,21 +69,27 @@ class MapView extends Component {
 
     this.setState({
       user_position: [location.coords.latitude, location.coords.longitude]
-    })
+    });
   };
 
   createPolygon = (lat, lon, radius, color) => {
+    radius = this.degreeFromMetres(radius);
+
     const positions = [
       [lat - radius / 3, lon - radius],
       [lat + radius / 3, lon - radius],
       [lat + 2 * radius / 3, lon],
-      [lat + radius / 3, lon +  radius],
+      [lat + radius / 3, lon + radius],
       [lat - radius / 3, lon + radius],
-      [lat - 2 * radius / 3, lon],
+      [lat - 2 * radius / 3, lon]
     ];
 
     return { positions, color };
-  }
+  };
+
+  degreeFromMetres = (metres) => {
+    return metres / 111111;
+  };
 }
 
 export default MapView;
