@@ -31,9 +31,14 @@ class MapView extends Component {
     });
 
     this.getBeacons();
+    this.getOthers();
 
     setInterval(() => {
       this.getBeacons();
+    }, 3000);
+
+    setInterval(() => {
+      this.getOthers();
     }, 3000);
 
     axios
@@ -84,7 +89,7 @@ class MapView extends Component {
   }
 
   onPosition = (location) => {
-    console.log(location.coords);
+    //console.log(location.coords);
 
     const lat = location.coords.latitude;
     const lon = location.coords.longitude;
@@ -117,14 +122,22 @@ class MapView extends Component {
   };
 
   startCapture = () => {
-    if (this.user != null) {
+    if (this.state.user != null) {
+
       axios
-        .post(Config.BASE_URL + 'users/start_capture/' + this.user.id)
+        .post(Config.BASE_URL + 'users/start_capture/' + this.state.user.id)
         .then((res) => res.data)
         .then((beacon) => {
-
+          console.log(beacon);
+          setTimeout(
+            () => {
+              axios.post(Config.BASE_URL + 'users/end_capture/' + this.state.user.id)
+                .then(() => this.getBeacons());
+            },
+            beacon.capture_time * 1000
+          );
         })
-        .catch(console.log);
+        .catch((error) => console.log('error: ' + error));
     }
   };
 
@@ -135,10 +148,14 @@ class MapView extends Component {
         const data = res.data;
 
         this.setState({
-          beacons: data.map(beacon => this.createPolygon(beacon.lat, beacon.lon, beacon.range, beacon.color || '#000000'))
-        }, () => console.log('State', this.state));
+          beacons: data.map(beacon => this.createPolygon(beacon.lat, beacon.lon, beacon.range, '#' + beacon.color || '#000000'))
+        }, () => console.log(this.state.beacons));
       });
   };
+
+  getOthers = () => {
+
+  }
 }
 
 export default MapView;

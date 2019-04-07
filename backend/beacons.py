@@ -14,9 +14,9 @@ def test_func():
     db = get_db()
 
     beacons = db.execute(
-        'SELECT b.id, b.lat, b.lon, b.range, b.capture_time, b.clan_id, b.is_being_captured, b.is_captured, c.color \
+        'SELECT b.id, b.lat, b.lon, b.range, b.capture_time, b.clan_id, b.is_being_captured, c.color \
         FROM beacons as b \
-        LEFT JOIN clans as c on c.id = b.id'
+        LEFT JOIN clans as c on c.id = b.clan_id'
     ).fetchall()
 
     res = []
@@ -29,8 +29,7 @@ def test_func():
             'captureTime': row[4],
             'clanId': row[5],
             'is_being_captured': row[6],
-            'is_captured': row[7],
-            'color': row[8]
+            'color': row[7]
         })
 
     return jsonify(res)

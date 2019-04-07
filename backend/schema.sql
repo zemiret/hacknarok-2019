@@ -17,9 +17,8 @@ CREATE TABLE beacons (
 
 	capture_time INTEGER, --seconds to capture the beacon
 
-    clan_id INTEGER,
+    clan_id INTEGER NULL,
 	is_being_captured INTEGER default 0,
-	is_captured INTEGER default 0,
 
 	FOREIGN KEY (clan_id) REFERENCES clans(id)
 );
@@ -46,17 +45,14 @@ CREATE TABLE users (
 
 INSERT INTO beacons(lat, lon, range, capture_time)
 VALUES 
-(1, 2, 5, 60),
-(50.028108999999995, 19.8919536, 10, 5),
-(50.0210837, 19.8859565, 50, 5);
+(1, 2, 5, 1),
+(50.028108999999995, 19.8919536, 10, 1),
+(50.0210837, 19.8859565, 50, 1),
+(50.018108999999995, 19.8819536, 50, 1);
 
-INSERT INTO beacons(lat, lon, range, capture_time, clan_id)
-VALUES 
-(50.018108999999995, 19.8819536, 50, 80, 1);
-
-INSERT INTO clans (name,color) VALUES('Sleipnir','FFCCDD');
-INSERT INTO clans (name,color) VALUES('Programisci','000000');
-INSERT INTO clans (name,color) VALUES('Inni','3366cc');
+INSERT INTO clans (name,color) VALUES('Sleipnir','00ff00');
+INSERT INTO clans (name,color) VALUES('Programisci','ff0000');
+INSERT INTO clans (name,color) VALUES('Inni','0000ff');
 
 INSERT INTO users (username,email,password,clan_id) VALUES('Szymon','szymon@gmail.com','password1234',1);
 INSERT INTO users (username,email,password,clan_id) VALUES('Szymi','szymi@gmail.com','password1234',1);

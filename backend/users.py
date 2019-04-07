@@ -62,26 +62,14 @@ def get_user_by_id(user_id):
 
     return user
 
-def get_uset_dict(user_id):
-    user = get_user_by_id(user_id)
 
-    return {
-        'id': user[0],
-        'username': user[1],
-        'email': user[2],
-        'clan_id': user[4],
-        'avatar': user[5] or '',
-        'lat': user[6] or 0,
-        'lon': user[7] or 0,
-        'beacon_id': user[8] or -1
-    }
-
-
-@bp.route('/start_capture/<int:user_id>', methods=(['POST']))
+@bp.route('/start_capture/<int:user_id>', methods=(['POST', 'GET']))
 def start_capture(user_id):
     db = get_db()
     msg = None
     user = get_user_by_id(user_id)
+
+    print(user)
 
     beacon = db.execute(
         'SELECT * FROM beacons b WHERE POWER(b.range,2) >= (POWER((b.lat - ?),2)+POWER((b.lon - ?),2))',
@@ -89,9 +77,11 @@ def start_capture(user_id):
     ).fetchone()
 
     if beacon is None:
-        return jsonify(None)
+        #return jsonify(None)
+        raise RuntimeError("Beacon is none")
     elif beacon[6] != 0:
-        return jsonify(None)
+        raise RuntimeError("Beacon is being captured")
+    #    return jsonify(None)
     else:
         db.execute(
             'UPDATE beacons SET is_being_captured =1'
@@ -100,9 +90,9 @@ def start_capture(user_id):
             'UPDATE users SET beacon_id = ? WHERE id = ?', (beacon[0], user_id)
         )
         db.commit()
-        return jsonify(beacon) 
+        return jsonify(get_beacon_dict(beacon)) 
 
-@bp.route('/end_capture/<int:beacon_id>', methods=(['POST']))
+@bp.route('/end_capture/<int:user_id>', methods=(['POST']))
 def end_capture(user_id):
     db = get_db()
     msg = None
@@ -116,7 +106,7 @@ def end_capture(user_id):
     beacon = db.execute(
         'SELECT * FROM beacons b \
          WHERE b.id = ?',
-        (user['beacon_id'])
+        (captured_beacon_id, )
     ).fetchone()
 
     if beacon is None:
@@ -207,3 +197,18 @@ def get_beacon_dict(beacon_row):
         'clan_id': beacon_row[5],
         'is_being_captured': beacon_row[6],
     }
+
+def get_user_dict(user_id):
+    user = get_user_by_id(user_id)
+
+    return {
+        'id': user[0],
+        'username': user[1],
+        'email': user[2],
+        'clan_id': user[4],
+        'avatar': user[5] or '',
+        'lat': user[6] or 0,
+        'lon': user[7] or 0,
+        'beacon_id': user[8] or -1
+    }
+
