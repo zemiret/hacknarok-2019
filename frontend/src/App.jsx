@@ -9,7 +9,6 @@ class App extends Component {
     return (
       <Router>
         <div>
-
           <Route path="/" component={MapView} />
           <Route path="/profile" component={Profile} />
         </div>

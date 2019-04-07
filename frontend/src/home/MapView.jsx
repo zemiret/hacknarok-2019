@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
 import { Map, Marker, Polygon, TileLayer } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 
 
 class MapView extends Component {
 
-  state = {
-    user_position: [40, 39],
-    other_positions: [
-      [50.028108999999995, 19.8919536],
-      [50.008108999999995, 19.9119536],
-      [50.015108999999995, 19.9019536],
-    ],
-    polygons: [
-      [
+  constructor() {
+    super();
+
+    this.state = {
+      user_position: [40, 39],
+      other_positions: [
         [50.028108999999995, 19.8919536],
-        [50.028208999999995, 19.8929536],
-        [50.029308999999995, 19.9039536],
-        [50.028008999999995, 19.9209536],
-      ]
-    ],
-  };
+        [50.008108999999995, 19.9119536],
+        [50.015108999999995, 19.9019536],
+      ],
+      polygons: []
+    };
+  }
 
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(this.onPosition, null, {
       enableHighAccuracy: true,
       timeout: 1000,
+    });
+
+    this.setState({
+      polygons: [
+        this.createPolygon(50.028108999999995, 19.8919536, 0.001, 'red'),
+        this.createPolygon(50.028108999999995, 19.7919536, 0.001, 'blue')
+      ]
     });
   }
 
@@ -48,29 +53,37 @@ class MapView extends Component {
 
           {polygons.map((polygon, i) => {
             console.log(polygon);
-            return <Polygon positions={polygon} key={i} color="blue"/>
+            return <Polygon positions={polygon.positions} key={i} color={polygon.color}/>
           })}
         </Map>
 
-        <button className="clanBtn" onClick={this.onBtnClick}>
-          Clans
-        </button>
+        <Link to="/profile" className="clanBtn">
+          Warrior profile
+        </Link>
       </div>
     );
   }
 
-  onBtnClick = () => {
-    console.log('Btn clicked!');
-  };
-
   onPosition = (location) => {
     console.log(location.coords);
-    // alert(location.coords);
 
     this.setState({
       user_position: [location.coords.latitude, location.coords.longitude]
     })
   };
+
+  createPolygon = (lat, lon, radius, color) => {
+    const positions = [
+      [lat - radius / 3, lon - radius],
+      [lat + radius / 3, lon - radius],
+      [lat + 2 * radius / 3, lon],
+      [lat + radius / 3, lon +  radius],
+      [lat - radius / 3, lon + radius],
+      [lat - 2 * radius / 3, lon],
+    ];
+
+    return { positions, color };
+  }
 }
 
 export default MapView;
