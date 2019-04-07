@@ -31,15 +31,15 @@ class MapView extends Component {
     });
 
     this.getBeacons();
-    this.getOthers();
+    // this.getOthers();
 
     setInterval(() => {
       this.getBeacons();
     }, 3000);
 
-    setInterval(() => {
-      this.getOthers();
-    }, 3000);
+    // setInterval(() => {
+    //   this.getOthers();
+    // }, 3000);
 
     axios
       .get(Config.BASE_URL + 'users/user/1')
@@ -58,6 +58,8 @@ class MapView extends Component {
     const { user, other_positions, beacons } = this.state;
     const pos = user == null ? [0, 0] : [this.state.user.lat, this.state.user.lon];
 
+
+    console.log(beacons);
 
     return (
       <div>
@@ -89,8 +91,6 @@ class MapView extends Component {
   }
 
   onPosition = (location) => {
-    //console.log(location.coords);
-
     const lat = location.coords.latitude;
     const lon = location.coords.longitude;
 
@@ -149,13 +149,13 @@ class MapView extends Component {
 
         this.setState({
           beacons: data.map(beacon => this.createPolygon(beacon.lat, beacon.lon, beacon.range, '#' + beacon.color || '#000000'))
-        }, () => console.log(this.state.beacons));
+        } );
       });
   };
 
-  getOthers = () => {
-
-  }
+  // getOthers = () => {
+  //
+  // }
 }
 
 export default MapView;

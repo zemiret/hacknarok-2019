@@ -69,22 +69,18 @@ def start_capture(user_id):
     msg = None
     user = get_user_by_id(user_id)
 
-    print(user)
-
     beacon = db.execute(
         'SELECT * FROM beacons b WHERE POWER(b.range,2) >= (POWER((b.lat - ?),2)+POWER((b.lon - ?),2))',
         (user[6], user[7])
     ).fetchone()
 
     if beacon is None:
-        #return jsonify(None)
         raise RuntimeError("Beacon is none")
     elif beacon[6] != 0:
         raise RuntimeError("Beacon is being captured")
-    #    return jsonify(None)
     else:
         db.execute(
-            'UPDATE beacons SET is_being_captured =1'
+            'UPDATE beacons SET is_being_captured = 1'
         )
         db.execute(
             'UPDATE users SET beacon_id = ? WHERE id = ?', (beacon[0], user_id)
@@ -104,19 +100,19 @@ def end_capture(user_id):
         return "The beacon does not exist"
 
     beacon = db.execute(
-        'SELECT * FROM beacons b \
-         WHERE b.id = ?',
+        'SELECT * FROM beacons b WHERE b.id = ?',
         (captured_beacon_id, )
     ).fetchone()
+
+    print(user['clan_id'], captured_beacon_id)
 
     if beacon is None:
         msg = 'Beacon no exists'
     else:
         db.execute(
-            'UPDATE beacons SET is_being_captured = 0, clan_id = ?',
-            (user['clan_id'],)
+            'UPDATE beacons SET is_being_captured = 0, clan_id = ? WHERE id = ?',
+            (user['clan_id'], captured_beacon_id)
         )
-
         db.execute(
             'UPDATE users SET beacon_id = -1 WHERE id = ?', (user_id, )
         )
