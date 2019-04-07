@@ -33,10 +33,14 @@ def create_app(test_config=None):
     db.init_app(app)
 
 
-    from . import views_test 
+    from . import views_test
     from . import beacons
+    from . import clans
+    from . import users
     app.register_blueprint(views_test.bp)
     app.register_blueprint(beacons.bp)
+    app.register_blueprint(clans.bp)
+    app.register_blueprint(users.bp)
 
     return app
 
