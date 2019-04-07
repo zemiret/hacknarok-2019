@@ -34,38 +34,22 @@ def test_func():
     return jsonify(res)
 
 
-@bp.route('/sql', methods=(['GET']))
-def sql():
-    db = get_db()
-
-    res = db.execute(
-        'SELECT POWER((9+?),3)',
-        (11.06,)
-    ).fetchone()
-
-    return str(res[0])
-
-
 @bp.route('/user/<int:user_id>', methods=(['GET']))
 def get_user(user_id):
     db = get_db()
 
-    user = db.execute(
-        'SELECT * FROM users WHERE id=?',
-        (user_id,)
-    ).fetchall()
+    user = get_user_by_id(user_id)
 
-    res = {}
-    for row in user:
-        res[str(row[0])] = {
-            'username': row[1],
-            'email': row[2],
-            'clan_id': row[4],
-            'avatar': row[5] or -1,
-            'lat': row[6] or -1,
-            'lon': row[7] or -1,
-            'beacon_id': row[8] or -1
-        }
+    res = {
+        'id': user[0],
+        'username': user[1],
+        'email': user[2],
+        'clan_id': user[4],
+        'avatar': user[5] or '',
+        'lat': user[6] or 0,
+        'lon': user[7] or 0,
+        'beacon_id': user[8] or -1
+    }
     return jsonify(res)
 
 
@@ -138,13 +122,10 @@ def break_capture(user_id):
         db.commit()
 
 
-@bp.route('move/<int:user_id>/<int:lat>/<int:lon>', methods=(['GET']))
+@bp.route('move/<int:user_id>/<float:lat>/<float:lon>', methods=(['POST']))
 def move(user_id, lat, lon):
     db = get_db()
-
-    user = db.execute(
-        'SELECT * FROM users WHERE id = ?', (user_id,)
-    ).fetchone()
+    user = get_user_by_id(user_id)
 
     if user is not None:
         if user[6] != lat or user[7] != lon:

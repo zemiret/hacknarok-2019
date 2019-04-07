@@ -41,7 +41,19 @@
 .clanBtn {
   position: fixed;
   bottom: 80px;
-  width: 70vw;
+  width: 100vw;
+  background-color: #ffffff;
+  color: #000000;
+  z-index: 200;
+  height: 30px;
+  display: inline-block;
+  text-align: center;
+}
+
+.captureBtn {
+  position: fixed;
+  bottom: 40px;
+  width: 100vw;
   background-color: #ffffff;
   color: #000000;
   z-index: 200;

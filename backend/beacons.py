@@ -19,9 +19,10 @@ def test_func():
         LEFT JOIN clans as c on c.id = b.id'
     ).fetchall()
 
-    res = {}
+    res = []
     for row in beacons:
-        res[str(row[0])] = {
+        res.append({
+            'id': row[0],
             'lat': row[1],
             'lon': row[2],
             'range': row[3],
@@ -30,7 +31,7 @@ def test_func():
             'is_being_captured': row[6],
             'is_captured': row[7],
             'color': row[8]
-        }
+        })
 
     return jsonify(res)
 

@@ -47,11 +47,12 @@ CREATE TABLE users (
 INSERT INTO beacons(lat, lon, range, capture_time)
 VALUES 
 (1, 2, 5, 60),
-(56.2221, 57.3221, 10, 70);
+(50.028108999999995, 19.8919536, 10, 70),
+(50.0210837, 19.8859565, 50, 70);
 
 INSERT INTO beacons(lat, lon, range, capture_time, clan_id)
 VALUES 
-(56.2221, 57.3231, 15, 80, 1);
+(50.018108999999995, 19.8819536, 50, 80, 1);
 
 INSERT INTO clans (name,color) VALUES('Sleipnir','FFCCDD');
 INSERT INTO clans (name,color) VALUES('Programisci','000000');
